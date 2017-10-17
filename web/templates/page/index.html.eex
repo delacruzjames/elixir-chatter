@@ -5,6 +5,9 @@
 
   <div class="col-md-8">
     <h3>Messages:</h3>
+    <ul id="messageList" class="list-unstyled">
+
+    </ul>
     <input type="text" id="newMessage" class="form-control">
   </div>
   <div class="col-md-4">
