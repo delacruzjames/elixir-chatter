@@ -32,9 +32,31 @@ let listBy = (user, {metas:metas}) => {
   }
 }
 
-// Import local files
-//
-// Local files can be imported directly using relative
-// paths "./socket" or full ones "web/static/js/socket".
+let userList = document.getElementById("userList")
 
-// import socket from "./socket"
+let render = (presences) => {
+  userList.innerHTML = Presence.list(presences, listBy)
+    .map(presences => `
+      <li>
+        ${presences.user}
+        <br>
+        <small>online since ${presences.onlineAt}</small>
+      </li>
+    `)
+    .join("")
+}
+
+
+let room = socket.channel("room:lobby")
+
+room.on("presence_state", state => {
+  presences = Presence.syncState(presences, state)
+  render(presences)
+})
+
+room.on("presence_diff", diff => {
+  presences = Presence.syncDiff(presencs, diff)
+  render(presences)
+})
+
+room.join()
