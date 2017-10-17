@@ -9,7 +9,8 @@ defmodule Chatter.UserController do
   end
 
   def show(conn, %{"id" => id}) do
-    user = Repo.get!(User)
-    render(conn, "show.html". user: user)
+    user = Repo.get!(User, id)
+    render(conn, "show.html", user: user)
+  end
   end
 end
