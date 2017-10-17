@@ -50,4 +50,13 @@ defmodule Chatter.UserController do
         render(conn, "edit.html", user: user, changeset: changeset)
     end
   end
+
+  def delete(conn, %{"id" => id}) do
+    user = Repo.get!(User, id)
+    Repo.delete!(user)
+
+    conn
+    |> put_flash(:danger, "User deleted successfully.")
+    |> redirect(to: user_path(conn, :index))
+  end
 end
