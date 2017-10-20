@@ -7,6 +7,14 @@ defmodule Chatter.Router do
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug Guardian.Plug.VerifySession
+    plug Guardian.Plug.LoadResource
+  end
+
+  pipeline :browser_auth do
+    plug Guardian.Plug.VerifySession
+    plug Guardian.Plug.EnsureAuthenticated, handler: Chatter.Token
+    plug Guardian.Plug.LoadResource
   end
 
   pipeline :api do
@@ -15,9 +23,17 @@ defmodule Chatter.Router do
 
   scope "/", Chatter do
     pipe_through :browser # Use the default browser stack
-    resources "/users", UserController
-    get "/", PageController, :index
+    resources "/users", UserController, only: [:new, :create]
+    resources "/sessions", SessionController, only: [:create, :delete]
+    get "/", SessionController, :new
   end
+
+  scope "/", Chatter do
+    pipe_through [:browser, :browser_auth]
+    resources "/users", UserController, only: [:show, :index, :update ]
+    get "/chat", PageController, :new
+  end
+
 
   # Other scopes may use custom stacks.
   # scope "/api", Chatter do
