@@ -1,4 +1,2 @@
-<h2>Create a new User</h2>
+<h2>Create Account!</h2>
 <%= render "form.html", changeset: @changeset, action: user_path(@conn, :create) %>
-
-<%= link "Back", to: user_path(@conn, :index) %>
