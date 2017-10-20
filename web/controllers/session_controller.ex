@@ -1,7 +1,7 @@
 defmodule Chatter.SessionController do
   use Chatter.Web, :controller
   import Chatter.Auth
-  
+
   def new(conn, _params) do
     render(conn, "new.html")
   end
@@ -19,4 +19,11 @@ defmodule Chatter.SessionController do
 	    		|> render("new.html")
 	    end
   	end
+
+
+  def delete(conn, _) do
+    conn
+    |> Guardian.Plug.sign_out
+    |> redirect(to: "/")
+  end
 end
