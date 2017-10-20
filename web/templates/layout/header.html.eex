@@ -1,0 +1,13 @@
+<nav class="navbar navbar-inverse">
+  <ul class="nav navbar-nav navbar-right">
+  <%= if logged_in?(@conn) do %>
+    <li><%= link "#{current_user(@conn).email}", to: user_path(@conn, :show, current_user(@conn))%></li>
+    <li><%= link "Sign Out", to: session_path(@conn, :delete, :access), method: :delete %></li>
+    <li><a href="#"></a></li>
+  <% else %>
+    <li><%= link "Create an Account", to: user_path(@conn, :new) %></li>
+    <li><%= link "Sign In", to: session_path(@conn, :new) %></li>
+    <li><a href="#"></a></li>
+  <% end %>
+  </ul>
+</nav>
