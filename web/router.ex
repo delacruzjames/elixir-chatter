@@ -31,7 +31,7 @@ defmodule Chatter.Router do
   scope "/", Chatter do
     pipe_through [:browser, :browser_auth]
     resources "/users", UserController, only: [:show, :index, :update ]
-    get "/chat", PageController, :new
+    get "/chat", PageController, :index
   end
 
 
