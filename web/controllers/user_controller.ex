@@ -10,7 +10,15 @@ defmodule Chatter.UserController do
 
   def show(conn, %{"id" => id}) do
     user = Repo.get!(User, id)
-    render(conn, "show.html", user: user)
+
+    cond do
+      user == Guardian.Plug.current_resource(conn) ->
+        render(conn, "show.html", user: user)
+      :error ->
+        conn
+        |> put_flash(:error, "You dont have access")
+        |> redirect(to: user_path(conn, :index))
+    end
   end
 
   def new(conn, _params) do
@@ -33,30 +41,53 @@ defmodule Chatter.UserController do
 
   def edit(conn, %{"id" => id}) do
     user = Repo.get!(User, id)
-    changeset = User.changeset(user)
-    render(conn, "edit.html", user: user, changeset: changeset)
+
+    cond do
+      user == Guardian.Plug.current_resource(conn) ->
+        changeset = User.changeset(user)
+        render(conn, "edit.html", user: user, changeset: changeset)
+      :error ->
+        conn
+        |> put_flash(:error, "You dont have access")
+        |> redirect(to: user_path(conn, :index))
+    end
   end
 
   def update(conn, %{"id" => id, "user" => user_params}) do
     user = Repo.get!(User, id)
     changeset = User.reg_changeset(user, user_params)
 
-    case Repo.update(changeset) do
-      {:ok, user} ->
+    cond do
+      user == Guardian.Plug.current_resource(conn) ->
+        case Repo.update(changeset) do
+          {:ok, user} ->
+            conn
+            |> put_flash(:info, "User updated successfully.")
+            |> redirect(to: user_path(conn, :show, user))
+          {:error, changeset} ->
+            render(conn, "edit.html", user: user, changeset: changeset)
+        end
+      :error ->
         conn
-        |> put_flash(:info, "User updated successfully.")
-        |> redirect(to: user_path(conn, :show, user))
-      {:error, changeset} ->
-        render(conn, "edit.html", user: user, changeset: changeset)
+        |> put_flash(:error, "You dont have access")
+        |> redirect(to: user_path(conn, :index))
     end
   end
 
   def delete(conn, %{"id" => id}) do
     user = Repo.get!(User, id)
-    Repo.delete!(user)
 
-    conn
-    |> put_flash(:danger, "User deleted successfully.")
-    |> redirect(to: user_path(conn, :index))
+    cond do
+      user == Guardian.Plug.current_resource(conn) ->
+        Repo.delete!(user)
+        conn
+        |> Guardian.Plug.sign_out
+        |> put_flash(:danger, "User deleted successfully.")
+        |> redirect(to: session_path(conn, :index))
+      :error ->
+        conn
+        |> put_flash(:error, "You dont have access")
+        |> redirect(to: user_path(conn, :index))
+    end
   end
 end
