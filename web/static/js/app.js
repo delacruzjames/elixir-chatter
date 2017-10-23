@@ -82,3 +82,51 @@ let renderMessage = (message) => {
 }
 
 room.on("message:new", message => renderMessage(message))
+
+let gameCounter = document.getElementById("gameCounter")
+let gameNotification = document.getElementById("gameNotification")
+let timePerGame = 30
+let payOutTime = 10
+
+startGame()
+
+
+
+function startGame() {
+  var i = 10;
+  setInterval(function() {
+    if (i == 0)
+      clearInterval(this)
+    else {
+      gameCounter.innerHTML =  String(i);
+      if (i==1) {
+        startGame()
+      }
+      console.log("Currently at " + i--)
+    }
+  }, 1000)
+}
+
+
+
+// function countdown(minutes) {
+//     var seconds = 60;
+//     var mins = minutes
+//     function tick() {
+//         //This script expects an element with an ID = "counter". You can change that to what ever you want.
+//         var counter = document.getElementById("gameCounter")
+//         var current_minutes = mins-1
+//         seconds--;
+//         counter.innerHTML = current_minutes.toString() + ":" + (seconds < 10 ? "0" : "") + String(seconds);
+//         if( seconds > 0 ) {
+//             setTimeout(tick, 1000);
+//         } else {
+//             if(mins > 1){
+//                 countdown(mins-1);
+//             }
+//         }
+//     }
+//     tick();
+// }
+// //You can use this script with a call to onclick, onblur or any other attribute you would like to use.
+// countdown(1);//where n is the number of minutes required.

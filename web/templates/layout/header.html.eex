@@ -1,4 +1,5 @@
 <nav class="navbar navbar-inverse">
+  <a class="navbar-brand" href="#">Color Games</a>
   <ul class="nav navbar-nav navbar-right">
   <%= if logged_in?(@conn) do %>
     <li><%= link "#{current_user(@conn).email}", to: user_path(@conn, :show, current_user(@conn))%></li>
